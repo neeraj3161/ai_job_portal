@@ -1,12 +1,7 @@
-import { createJob } from "../models/job.model.js";
+import { saveJob } from "../models/job.model.js";
 
-/*
-  Phase 1:
-  - Jobs come from public sources / user input
-  - Google Jobs integration later
-*/
-export function discoverJobs(preferences) {
-  const rawJobs = [
+export async function discoverJobs() {
+  const jobs = [
     {
       title: "Backend Engineer",
       company: "Berlin Tech",
@@ -21,6 +16,10 @@ export function discoverJobs(preferences) {
     }
   ];
 
-  return rawJobs.map(createJob);
-}
+  const savedJobs = [];
+  for (const job of jobs) {
+    savedJobs.push(await saveJob(job));
+  }
 
+  return savedJobs;
+}

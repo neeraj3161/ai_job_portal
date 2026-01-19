@@ -1,13 +1,11 @@
-import { createUser } from "../models/user.model.js";
+import { createUser, getAllUsers } from "../models/user.model.js";
 
-const users = [];
-
-export function createUserProfile(req, res) {
-  const user = createUser(req.body);
-  users.push(user);
+export async function createUserProfile(req, res) {
+  const user = await createUser(req.body);
   res.status(201).json(user);
 }
 
-export function getUsers(req, res) {
+export async function getUsers(req, res) {
+  const users = await getAllUsers();
   res.json(users);
 }
