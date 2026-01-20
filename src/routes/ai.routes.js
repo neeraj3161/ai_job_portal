@@ -1,8 +1,8 @@
 import express from "express";
-import { analyzeJob } from "../controllers/ai.controller.js";
+import { runAgenticFlow } from "../controllers/ai.controller.js";
 
 const router = express.Router();
 
-router.post("/analyze", analyzeJob);
+router.post("/run", runAgenticFlow);
 
 export default router;

@@ -1,19 +1,23 @@
-import { scoreJob } from "../services/aiMatching.service.js";
-import { generateOutreach } from "../services/outreach.service.js";
+import { AgentOrchestrator } from "../orchestrator/AgentOrchestrator.js";
+import { GoogleJobDiscoveryAgent } from "../agents/GoogleJobDiscoveryAgent.js";
+import { MatchingAgent } from "../agents/MatchingAgent.js";
+import { OutreachAgent } from "../agents/OutreachAgent.js";
+import { PersistenceAgent } from "../agents/PersistenceAgent.js";
 
-export async function analyzeJob(req, res) {
-  const { user, job } = req.body;
-
-  const score = await scoreJob(user, job);
-
-  let outreach = null;
-  if (score >= 70) {
-    outreach = await generateOutreach(user, job);
-  }
-
-  res.json({
-    score,
-    outreach,
-    applyLink: job.applyLink
+export async function runAgenticFlow(req, res) {
+  const orchestrator = new AgentOrchestrator({
+    googleDiscovery: new GoogleJobDiscoveryAgent(),
+    matching: new MatchingAgent(),
+    outreach: new OutreachAgent(),
+    persistence: new PersistenceAgent()
   });
+
+  const finalState = await orchestrator.run(
+    "Discover jobs via Google and prepare outreach",
+    {
+      user: req.body.user
+    }
+  );
+
+  res.json(finalState);
 }
